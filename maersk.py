@@ -50,20 +50,37 @@ def maersk(from_city, to_city, option_from_city, option_to_city, commodity, cont
 
         try:
             driver.maximize_window() # For maximizing window
-            sleep(1)
+            sleep(1.4)
             driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[1]/div[2]/div/div[1]/div[1]/div/div/div/div/div/input").send_keys(from_city) # Entering details to from city
-            elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
-            elements_from_city = driver.find_elements(By.CLASS_NAME, "typeahead__suggestions__line--1") # SELECTING FIRST OPTION FROM "FROM CITY"
-            elements_from_city[0].click() # First element under search result of From city
+            
+            try:
+            
+                elem = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
+                elements_from_city = driver.find_elements(By.CLASS_NAME, "typeahead__suggestions__line--1") # SELECTING FIRST OPTION FROM "FROM CITY"
+                elements_from_city[0].click() # First element under search result of From city
+            except:
+                driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[1]/div[2]/div/div[1]/div[1]/div/div/div/div/div/input").send_keys(Keys.BACKSPACE) # Entering details to from city
+                elem = WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
+            
+                elements_from_city = driver.find_elements(By.CLASS_NAME, "typeahead__suggestions__line--1") # SELECTING FIRST OPTION FROM "FROM CITY"
+                elements_from_city[0].click() # First element under search result of From city
+            
             toc = driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[1]/div[2]/div/div[2]/div[1]/div/div/div[1]/div/div/input") # Entering detail into To city
             toc.click()
             toc.send_keys(to_city)
-            elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
+            
             try:
+                elem = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
+                
                 elements_to_city = driver.find_elements(By.CLASS_NAME, "typeahead__suggestions__line--1") # SELECTING FIRST OPTION FROM "TO CITY"
                 elements_to_city[0].click() # First element under search result of To city
             except:
-                print("Not found")
+                toc.click()
+                toc.send_keys(Keys.BACKSPACE)
+                elem = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
+                elements_to_city = driver.find_elements(By.CLASS_NAME, "typeahead__suggestions__line--1") # SELECTING FIRST OPTION FROM "TO CITY"
+                elements_to_city[0].click()
+
 
             driver.find_element("xpath", from_city_option[option_from_city]).click() # Merchant Haulage - From city
             driver.find_element("xpath", to_city_option[option_to_city]).click() # Merchant Haulage - To City
@@ -72,23 +89,34 @@ def maersk(from_city, to_city, option_from_city, option_to_city, commodity, cont
             elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "typeahead__suggestions__line--1")))
             elements_commodity = driver.find_elements(By.CLASS_NAME, "typeahead__suggestions__line--1") # SELECTING FIRST OPTION FROM "FROM COMMODITY"
             elements_commodity[0].click() # First element under search result of From city            
+            driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section").click() # Preventing danger cargo quote icon to pop up
+        
             try:
                 elem = WebDriverWait(driver, 30).until(EC.invisibility_of_element_located((By.XPATH, "/fieldset/div[3]/div[1]/div/div/div/div/div/input")))
+                sleep(0.5)
                 driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/input").click()
                 driver.find_element("xpath", str(container_types[container_type])).click()
             except:
-                print("Unable to fetch container detais try again later")
-                break
+                sleep(3)
+                driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/input").click()
+                driver.find_element("xpath", str(container_types[container_type])).click()
             
+            sleep(0.3)
             container_quantity_element = driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[2]/div[1]/div/div/div/div/input")
             driver.execute_script("arguments[0].value = ''", container_quantity_element) # Container Quantity
+            sleep(0.3)
             container_quantity_element.send_keys(container_quantity)
             container_quantity_element.send_keys(Keys.RETURN)
 
             container_weight_element = driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[2]/div[2]/div/div/div/div/input") # Weight of each container
             driver.execute_script("arguments[0].value = ''", container_weight_element) # weight Quantity
-            container_weight_element.send_keys(weight)
-            container_weight_element.send_keys(Keys.RETURN)
+            try:
+                container_weight_element.send_keys(weight)
+                container_weight_element.send_keys(Keys.RETURN)
+            except:
+                sleep(1)
+                container_weight_element.send_keys(weight)
+                container_weight_element.send_keys(Keys.RETURN)
 
             element = driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[4]/div[2]/div/div/div[1]/input")
             driver.execute_script("arguments[0].scrollIntoView();", element)
@@ -124,14 +152,19 @@ def maersk(from_city, to_city, option_from_city, option_to_city, commodity, cont
             driver.find_element(By.CSS_SELECTOR, "#webapp > div > article > section > section.request-summary.action-card > div.docs__row.request-summary__info.flex--row.top > div.request-summary__info--edit").click() # Clicking on edit request
             elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/a")))
             sleep(1)
-            driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/a").click() # Clearing container detail
+            try:
+                driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/a").click() # Clearing container detail
+            except:
+                sleep(1)
+                driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/a").click() # Clearing container detail
+
             try:
                 driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/fieldset[3]/div[3]/div[1]/div/div/div/div/div/input").click()
                 elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, str(container_types["40 DRY STANDARD"]))))
                 driver.find_element("xpath", str(container_types["40 DRY STANDARD"])).click()
             except:
-                print("Unable to fetch container detais try again later")
-                break
+                sleep(3)
+                driver.find_element("xpath", str(container_types["40 DRY STANDARD"])).click()
 
             driver.find_element("xpath", "/html/body/div[2]/main/div/article/section/section/section/div/form/div[2]/div/div/button").click()
 
@@ -168,6 +201,6 @@ two_weeks = todays_date + timedelta(weeks = 2)
 day = two_weeks.day
 month = calendar.month_abbr[two_weeks.month]
 
-maersk(sys.argv[1], sys.argv[2], "merchant_haulage", "merchant_haulage", "machinery", "20 DRY STANDARD", "1", "22000", str(month), str(day))
+#maersk(sys.argv[1], sys.argv[2], "merchant_haulage", "merchant_haulage", "machinery", "20 DRY STANDARD", "1", "22000", str(month), str(day))
 
-#maersk("chennai", "hamburg", "merchant_haulage", "merchant_haulage", "machinery", "20 DRY STANDARD", "3", "23000", "May", "14")
+maersk("ennore", "hamburg", "merchant_haulage", "merchant_haulage", "machinery", "20 DRY STANDARD", "3", "23000", "May", "14")
