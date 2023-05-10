@@ -138,5 +138,5 @@ two_weeks_list = str(two_weeks).split("-")
 date_input = two_weeks_list[2] + "." + two_weeks_list[1] + "." + two_weeks_list[0]
 
 
-happag(sys.argv[1], sys.argv[2], date_input)
-#happag("chennai", "norfolk", date_input)
+#happag(sys.argv[1], sys.argv[2], date_input)
+happag("chennai", "norfolk", date_input)
