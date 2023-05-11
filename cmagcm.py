@@ -32,7 +32,7 @@ def cma(from_city, to_city, day, month, container, weight, number_containers, co
             wait = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[12]/div[1]/div[1]/ul/li")))
             li_elements = driver.find_elements(By.TAG_NAME, "li")
             li_elements[-1].click()
-            sleep(random.uniform(0, 0.7))
+            sleep(random.uniform(0, 0.5))
             # Clicking on date picker
             driver.find_element("xpath", "/html/body/div[2]/div/main/div/section/form/fieldset[1]/div/div[2]/div/div/div/input").click()
             sleep(random.uniform(0, 0.9))

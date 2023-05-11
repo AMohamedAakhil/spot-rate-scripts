@@ -23,11 +23,10 @@ def happag(from_city, to_city, date, timesmall=1, timemed=3, timelarge=5):
     while True:
         try:
             # #azureFormSpinner > svg
-            
-            driver.get("https://solutions.hapag-lloyd.com/quick-quotes")
-            elem = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "desktop.no-touch.body--light")))
-            sleep(4)
-            start_loc = driver.find_element("xpath", "/html/body/div[2]/div/div/div/div/form/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div/div/div[1]/label/div/div[1]/div[2]/div[1]/input")
+            driver.get_in("https://solutions.hapag-lloyd.com/quick-quotes")
+            wait = WebDriverWait(driver, 10)
+            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "body > div.q-loading-bar.q-loading-bar--top[style='transform: translate3d(0%, -200%, 0px); height: 2px; opacity: 0;']")))            
+            start_loc = driver.find_element("xpath", "/html/body/div[2]/div/div/div/div/form/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div/div/div[1]/label/div/div/div[2]/div[1]/input")
             start_loc.click()
             start_loc.send_keys(from_city)
             elem = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "q-item__section.column.q-item__section--main.justify-center")))
@@ -130,7 +129,8 @@ def happag(from_city, to_city, date, timesmall=1, timemed=3, timelarge=5):
 
             except:
                 print("solve captcha and rerun")
-                quit()
+                break
+                
 
 todays_date = date.today()
 two_weeks = todays_date + timedelta(weeks = 2)  
@@ -138,5 +138,5 @@ two_weeks_list = str(two_weeks).split("-")
 date_input = two_weeks_list[2] + "." + two_weeks_list[1] + "." + two_weeks_list[0]
 
 
-#happag(sys.argv[1], sys.argv[2], date_input)
-happag("chennai", "norfolk", date_input)
+happag(sys.argv[1], sys.argv[2], date_input)
+#happag("chennai", "norfolk", date_input)

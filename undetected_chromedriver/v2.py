@@ -207,10 +207,10 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
 
         self.browser_args = [
             find_chrome_executable(),
-            "--user-data-dir=%s" % user_data_dir,
+            #"--user-data-dir=%s" % user_data_dir,
             "--remote-debugging-host=%s" % debug_host,
             "--remote-debugging-port=%s" % debug_port,
-            "--log-level=%d" % divmod(logging.getLogger().getEffectiveLevel(), 10)[0],
+            #"--log-level=%d" % divmod(logging.getLogger().getEffectiveLevel(), 10)[0],
             *extra_args,
         ]
 
@@ -324,7 +324,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             # threading.Timer(factor or self.factor, self.close).start()
             time.sleep(delay or self.delay)
             self.service.start()
-            # self.start_session()
+            self.start_session()
 
     def quit(self):
         try:
